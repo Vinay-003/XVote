@@ -1,5 +1,6 @@
 package com.example.votingapp
 
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,7 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
 
 class SignupPage : BasePage() {
     override val title: String = "Sign Up"
@@ -27,11 +32,22 @@ class SignupPage : BasePage() {
         var confirmPassword by remember { mutableStateOf("") }
         var errorMessage by remember { mutableStateOf<String?>(null) }
 
-
         val launcher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()
         ) { uri: Uri? ->
             uidProof = uri
+        }
+
+        val context = LocalContext.current
+        val countryList = loadCountryList(context)
+
+        fun isValidPhoneNumber(phoneNumber: String): Boolean {
+            val phoneRegex = "^[+]?[0-9]{10,13}$".toRegex()
+            return phoneNumber.matches(phoneRegex)
+        }
+
+        fun isValidCountry(country: String): Boolean {
+            return countryList.contains(country)
         }
 
         Column(
@@ -52,7 +68,6 @@ class SignupPage : BasePage() {
             Button(onClick = { launcher.launch("application/pdf") }) {
                 Text("Upload UID Proof (PDF)")
             }
-
             Spacer(modifier = Modifier.height(8.dp))
             TextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
             Spacer(modifier = Modifier.height(8.dp))
@@ -61,13 +76,23 @@ class SignupPage : BasePage() {
             TextField(value = confirmPassword, onValueChange = { confirmPassword = it }, label = { Text("Confirm Password") }, visualTransformation = PasswordVisualTransformation())
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
-                if (password == confirmPassword && password.length > 8) {
-                    // add signup logic here
-                    setCurrentPage(SelectElectionPage(sampleElections)) // for now just by  passing it
-                } else {
-                    // Show error message
-                    errorMessage = "Passwords do not match"
-
+                when {
+                    name.isEmpty() -> errorMessage = "Name is required"
+                    phoneNumber.isEmpty() -> errorMessage = "Phone Number is required"
+                    !isValidPhoneNumber(phoneNumber) -> errorMessage = "Invalid Phone Number"
+                    country.isEmpty() -> errorMessage = "Country is required"
+                    !isValidCountry(country) -> errorMessage = "Invalid Country Name"
+                    uidNumber.isEmpty() -> errorMessage = "UID Number is required"
+                //    uidProof == null -> errorMessage = "UID Proof is required"
+                    email.isEmpty() -> errorMessage = "Email is required"
+                    password.isEmpty() -> errorMessage = "Password is required"
+                    confirmPassword.isEmpty() -> errorMessage = "Confirm Password is required"
+                    password != confirmPassword -> errorMessage = "Passwords do not match"
+                    password.length <= 8 -> errorMessage = "Password must be longer than 8 characters"
+                    else -> {
+                        // Perform signup logic here
+                        setCurrentPage(SelectElectionPage(sampleElections)) // Pass sampleElections
+                    }
                 }
             }) {
                 Text("Sign Up")
@@ -77,6 +102,13 @@ class SignupPage : BasePage() {
                 Text(it, color = MaterialTheme.colorScheme.error)
             }
         }
+    }
+
+    private fun loadCountryList(context: Context): List<String> {
+        val inputStream = context.assets.open("countries.json")
+        val reader = InputStreamReader(inputStream)
+        val countryType = object : TypeToken<List<String>>() {}.type
+        return Gson().fromJson(reader, countryType)
     }
 
     @Preview
