@@ -15,6 +15,12 @@ class LoginPage : BasePage() {
     fun Content(sampleElections: List<Election>, setCurrentPage: (BasePage) -> Unit) {
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
+        var errorMessage by remember { mutableStateOf<String?>(null) }
+
+        fun isValidEmail(email: String): Boolean {
+            val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()
+            return email.matches(emailRegex)
+        }
 
         Column(
             modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -26,10 +32,18 @@ class LoginPage : BasePage() {
             TextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation())
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
-                // Handle login logic here
-                setCurrentPage(SelectElectionPage(sampleElections)) // Pass sampleElections
+                if (isValidEmail(email)) {
+                    // Handle login logic here
+                    setCurrentPage(SelectElectionPage(sampleElections)) // Pass sampleElections
+                } else {
+                    errorMessage = "Please enter a valid email address."
+                }
             }) {
                 Text("Login")
+            }
+            errorMessage?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(it, color = MaterialTheme.colorScheme.error)
             }
         }
     }

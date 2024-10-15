@@ -25,6 +25,8 @@ class SignupPage : BasePage() {
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var confirmPassword by remember { mutableStateOf("") }
+        var errorMessage by remember { mutableStateOf<String?>(null) }
+
 
         val launcher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent()
@@ -33,7 +35,9 @@ class SignupPage : BasePage() {
         }
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -48,10 +52,7 @@ class SignupPage : BasePage() {
             Button(onClick = { launcher.launch("application/pdf") }) {
                 Text("Upload UID Proof (PDF)")
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { launcher.launch("image/*") }) {
-                Text("Upload UID Proof (Image)")
-            }
+
             Spacer(modifier = Modifier.height(8.dp))
             TextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
             Spacer(modifier = Modifier.height(8.dp))
@@ -60,15 +61,20 @@ class SignupPage : BasePage() {
             TextField(value = confirmPassword, onValueChange = { confirmPassword = it }, label = { Text("Confirm Password") }, visualTransformation = PasswordVisualTransformation())
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
-                if (password == confirmPassword) {
-                    // Perform signup logic here
-                    setCurrentPage(SelectElectionPage(sampleElections)) // Pass sampleElections
+                if (password == confirmPassword && password.length > 8) {
+                    // add signup logic here
+                    setCurrentPage(SelectElectionPage(sampleElections)) // for now just by  passing it
                 } else {
                     // Show error message
-                    // You can use a Snackbar or any other method to show the error
+                    errorMessage = "Passwords do not match"
+
                 }
             }) {
                 Text("Sign Up")
+            }
+            errorMessage?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(it, color = MaterialTheme.colorScheme.error)
             }
         }
     }
