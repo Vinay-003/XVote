@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.tooling.preview.Preview
 
 
 class IdConfirmationPage(
@@ -35,7 +36,7 @@ class IdConfirmationPage(
             Spacer(modifier = Modifier.height(8.dp))
             TextField(value = dob, onValueChange = { dob = it }, label = { Text("Date of Birth") })
             Spacer(modifier = Modifier.height(8.dp))
-            TextField(value = voterIdNumber, onValueChange = { /* No-op */ }, label = { Text("Voter ID Number") }, enabled = false)
+            TextField(value = voterIdNumber, onValueChange = { /* No-op */ }, label = { Text("Voter ID Number") }, enabled = true)
             Spacer(modifier = Modifier.height(8.dp))
             TextField(value = address, onValueChange = { address = it }, label = { Text("Address") })
             Spacer(modifier = Modifier.height(8.dp))
@@ -46,4 +47,18 @@ class IdConfirmationPage(
             }
         }
     }
+
+}
+@Preview
+@Composable
+fun IdConfirmationPagePreview() {
+    val sampleCandidate = Candidate("Sample Candidate")
+    val sampleVoterIdNumber = "123456789"
+    val sampleVoterIdProof: Uri? = null // Replace with a valid Uri if needed
+
+    IdConfirmationPage(
+        candidate = sampleCandidate,
+        voterIdNumber = sampleVoterIdNumber,
+        voterIdProof = sampleVoterIdProof
+    ).Content(setCurrentPage = {})
 }

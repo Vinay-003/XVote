@@ -24,6 +24,10 @@ class HomePage : BasePage() {
             Button(onClick = { setCurrentPage(SignupPage()) }) {
                 Text("Sign Up")
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { setCurrentPage(IdDetailsPage(Candidate("sample"))) }) {
+                Text("Testing")
+            }
         }
     }
 }

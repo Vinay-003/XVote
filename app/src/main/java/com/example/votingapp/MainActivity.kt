@@ -16,11 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Theme {
                 var currentPage: BasePage by remember { mutableStateOf(HomePage()) }
-                var isLoggedIn by remember { mutableStateOf(false) }
-                val sampleElections = listOf(
-                    Election("Election 1", listOf(Candidate("Candidate 1"), Candidate("Candidate 2"))),
-                    Election("Election 2", listOf(Candidate("Candidate 3"), Candidate("Candidate 4")))
-                )
+                val sampleElections = ElectionData.sampleElections
 
                 Column(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -35,7 +31,6 @@ class MainActivity : ComponentActivity() {
                         is SelectElectionPage -> (currentPage as SelectElectionPage).Content { newPage -> currentPage = newPage }
                         is SelectCandidatePage -> (currentPage as SelectCandidatePage).Content { newPage -> currentPage = newPage }
                         is IdDetailsPage -> (currentPage as IdDetailsPage).Content { newPage -> currentPage = newPage }
-                        is IdConfirmationPage -> (currentPage as IdConfirmationPage).Content { newPage -> currentPage = newPage }
                         is CastVotePage -> (currentPage as CastVotePage).Content { newPage -> currentPage = newPage }
                         is VoteConfirmationPage -> (currentPage as VoteConfirmationPage).Content()
                     }

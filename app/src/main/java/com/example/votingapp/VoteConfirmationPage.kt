@@ -17,7 +17,7 @@ class VoteConfirmationPage(private val candidate: Candidate) : BasePage() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("You have successfully cast your vote for: ${candidate.name}")
+            Text("You have successfully casted your vote for: ${candidate.name}")
         }
     }
 }

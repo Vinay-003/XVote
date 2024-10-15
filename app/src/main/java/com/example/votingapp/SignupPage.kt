@@ -65,8 +65,8 @@ class SignupPage : BasePage() {
             Spacer(modifier = Modifier.height(8.dp))
             TextField(value = uidNumber, onValueChange = { uidNumber = it }, label = { Text("UID Number") })
             Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { launcher.launch("application/pdf") }) {
-                Text("Upload UID Proof (PDF)")
+            Button(onClick = { launcher.launch("image/*") }) {
+                Text("Upload  UID Proof (Image)")
             }
             Spacer(modifier = Modifier.height(8.dp))
             TextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
@@ -83,7 +83,7 @@ class SignupPage : BasePage() {
                     country.isEmpty() -> errorMessage = "Country is required"
                     !isValidCountry(country) -> errorMessage = "Invalid Country Name"
                     uidNumber.isEmpty() -> errorMessage = "UID Number is required"
-                //    uidProof == null -> errorMessage = "UID Proof is required"
+                    uidProof == null -> errorMessage = "UID Proof is required"
                     email.isEmpty() -> errorMessage = "Email is required"
                     password.isEmpty() -> errorMessage = "Password is required"
                     confirmPassword.isEmpty() -> errorMessage = "Confirm Password is required"
