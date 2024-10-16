@@ -90,5 +90,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core.v351)
     androidTestImplementation(libs.ui.test.junit4)
     implementation (libs.gson)
+    implementation (libs.core)
 
 }
